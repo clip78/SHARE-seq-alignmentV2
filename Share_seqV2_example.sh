@@ -183,10 +183,22 @@ if [ "$Start" = Fastq ]; then
 		ln -s $rawdir/"$Run"_S1_I1_001.fastq.gz $dir/I1.1.fastq.gz
 		ln -s $rawdir/"$Run"_S1_I2_001.fastq.gz $dir/I2.1.fastq.gz
 	    else
-		parallel 'ln -s '$rawdir'/'$Run'_S0_L00{}_R1_001.fastq.gz '$dir'/R1.{}.fastq.gz' ::: $(seq $nolane)
-		parallel 'ln -s '$rawdir'/'$Run'_S0_L00{}_R2_001.fastq.gz '$dir'/R2.{}.fastq.gz' ::: $(seq $nolane)
-		parallel 'ln -s '$rawdir'/'$Run'_S0_L00{}_I1_001.fastq.gz '$dir'/I1.{}.fastq.gz' ::: $(seq $nolane)
-		parallel 'ln -s '$rawdir'/'$Run'_S0_L00{}_I2_001.fastq.gz '$dir'/I2.{}.fastq.gz' ::: $(seq $nolane)
+		count=0
+		for file_path in "$rawdir"/*L00*_R1_001.fastq.gz; do
+		    if [ ! -e "$file_path" ]; then break; fi
+		    count=$((count+1))
+		    ln -s "$file_path" "$dir/R1.$count.fastq.gz"
+
+		    file_r2="${file_path/_R1_/_R2_}"
+		    if [ -e "$file_r2" ]; then ln -s "$file_r2" "$dir/R2.$count.fastq.gz"; fi
+
+		    file_i1="${file_path/_R1_/_I1_}"
+		    if [ -e "$file_i1" ]; then ln -s "$file_i1" "$dir/I1.$count.fastq.gz"; fi
+
+		    file_i2="${file_path/_R1_/_I2_}"
+		    if [ -e "$file_i2" ]; then ln -s "$file_i2" "$dir/I2.$count.fastq.gz"; fi
+		done
+		nolane=$count
 	    fi
 	fi
 	
