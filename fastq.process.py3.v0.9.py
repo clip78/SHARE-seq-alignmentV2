@@ -832,6 +832,7 @@ opts.add_option("--d", help="<Index2> optional xxx_S1_I2_001.fastq.gz", default=
 opts.add_option("--qc", action="store_true", help="QC run with first 3M reads")
 opts.add_option("--out", help="Path to the output fastq files")
 opts.add_option("-t", help="P5 chemistry accepts rev and fwd")
+opts.add_option("-m", "--mismatch", help="mismatch tolerance", default="1")
 
 options, arguments = opts.parse_args()
 
@@ -883,7 +884,7 @@ else:
 # initialize variables
 i=0;j=0;k=0;tot_b=0;count=1
 n=20  # match seq
-mismatch=1  # only allow 0-1 mismatches for now
+mismatch = int(options.mismatch)
 good_r=0
 
 # check if reads are indexed
