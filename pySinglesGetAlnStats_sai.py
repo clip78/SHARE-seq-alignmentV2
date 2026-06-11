@@ -106,11 +106,11 @@ for i in range(0,len(table)-1):
     # find
     if name in dupsFiles[i].split('/'):
         j = i
-        print name+' '+dupsFiles[j]
+        print(name+' '+dupsFiles[j])
     else:
         for j in range(0,len(dupsFiles)):
             if name in dupsFiles[j].split('/'):
-                print name+' '+dupsFiles[j]
+                print(name+' '+dupsFiles[j])
                 break
     
     # check
@@ -126,7 +126,9 @@ for i in range(0,len(table)-1):
         sys.exit('Check file: '+alignFiles[j])
     
     # skip if any problems
-    try:iSizeHeaders = np.loadtxt(options.d+'/'+iSizeFiles[j],dtype='str',delimiter=',')[0].split('\t')
+    try:
+        iSizeRaw = np.loadtxt(options.d+'/'+iSizeFiles[j],dtype='str',delimiter=',')
+        iSizeHeaders = iSizeRaw[0].split('\t')
     except:continue
     
     # pass filter
@@ -168,8 +170,8 @@ for i in range(0,len(table)-1):
     totalFiltRds.append(np.sum(np.array(statData[idx:-1][:,2],int))/2)
     
     # get iSize
-    iSizeHeaders = np.loadtxt(options.d+'/'+iSizeFiles[j],dtype='str',delimiter=',')[0].split('\t')
-    iSizeVals = np.loadtxt(options.d+'/'+iSizeFiles[j],dtype='str',delimiter=',')[1].split('\t')
+    iSizeHeaders = iSizeRaw[0].split('\t')
+    iSizeVals = iSizeRaw[1].split('\t')
     iSizeData = dict(zip(iSizeHeaders,iSizeVals))
     mediSize.append(iSizeData['MEDIAN_INSERT_SIZE'])
     meaniSize.append(round(float(iSizeData['MEAN_INSERT_SIZE']),2))
@@ -178,7 +180,7 @@ for i in range(0,len(table)-1):
     widthiSize.append(iSizeData['WIDTH_OF_80_PERCENT'])
     
     # raw counts
-    iSizeData = np.loadtxt(options.d+'/'+iSizeFiles[j],dtype='str',delimiter=',')[3:]
+    iSizeData = iSizeRaw[3:]
     outIsize = np.zeros(1000)
     for l in range(0,len(iSizeData)):
         k = iSizeData[l]
@@ -202,5 +204,5 @@ import scipy.io as sio
 sio.savemat(outName+'.iSize.txt',{'iSize':np.array(iSizeMat),'annotation':np.array(final, dtype=np.object)},oned_as='column',do_compression='True')
 
 # sign out
-print "Created by Sai Ma."
-print "Completed."
+print("Created by Sai Ma.")
+print("Completed.")
