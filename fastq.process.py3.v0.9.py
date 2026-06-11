@@ -1099,30 +1099,33 @@ while 1:
         qual2 = p2_line.rstrip()
         needtrim = "F"
         if (barcodeMatch == 4):
-            if p5set[p5] in project:
-#                print(p5set[p5])
-#                print(sampletype[p5set[p5]])
-                if sampletype[p5set[p5]] == "ATAC" or sampletype[p5set[p5]] == "TAPS":
-                    seqhead1 = seqhead1[ :index-1] + b"_" + str.encode(barcode) + b"\n"
-                    seqhead2 = seqhead2[ :index-1] + b"_" + str.encode(barcode) + b"\n"
+            p5_val = p5set[p5]
+            if p5_val in project:
+                barcode_bytes = str.encode(barcode)
+                st_val = sampletype[p5_val]
+#                print(p5_val)
+#                print(st_val)
+                if st_val == "ATAC" or st_val == "TAPS":
+                    seqhead1 = seqhead1[ :index-1] + b"_" + barcode_bytes + b"\n"
+                    seqhead2 = seqhead2[ :index-1] + b"_" + barcode_bytes + b"\n"
                     needtrim = "T"
-                elif sampletype[p5set[p5]] == "DipC":
-                    seqhead1 = seqhead1[ :index-1] + b"_1:N:0:" + str.encode(barcode) + b"\n"
-                    seqhead2 = seqhead2[ :index-1] + b"_1:N:0:" + str.encode(barcode) + b"\n"
+                elif st_val == "DipC":
+                    seqhead1 = seqhead1[ :index-1] + b"_1:N:0:" + barcode_bytes + b"\n"
+                    seqhead2 = seqhead2[ :index-1] + b"_1:N:0:" + barcode_bytes + b"\n"
                     needtrim = "T"
-                elif sampletype[p5set[p5]] == "RNA":
-                    if N6type[p5set[p5]] == "F":
-                        seqhead1 = seqhead1[ :index-1] + b"_" + str.encode(barcode) + b"_" + seq2[0:10] + b"\n"
-                        seqhead2 = seqhead2[ :index-1] + b"_" + str.encode(barcode) + b"_" + seq2[0:10] + b"\n"
+                elif st_val == "RNA":
+                    if N6type[p5_val] == "F":
+                        seqhead1 = seqhead1[ :index-1] + b"_" + barcode_bytes + b"_" + seq2[0:10] + b"\n"
+                        seqhead2 = seqhead2[ :index-1] + b"_" + barcode_bytes + b"_" + seq2[0:10] + b"\n"
                     elif Levenshtein.distance(seq2[11:19].decode(),"TTTTTTTT") < 3:
-                        seqhead1 = seqhead1[ :index-1] + b"_" + str.encode(barcode) + b"_" + seq2[0:10] + b"\n"
-                        seqhead2 = seqhead2[ :index-1] + b"_" + str.encode(barcode) + b"_" + seq2[0:10] + b"\n"
+                        seqhead1 = seqhead1[ :index-1] + b"_" + barcode_bytes + b"_" + seq2[0:10] + b"\n"
+                        seqhead2 = seqhead2[ :index-1] + b"_" + barcode_bytes + b"_" + seq2[0:10] + b"\n"
                     else:
-                        seqhead1 = seqhead1[ :index-1] + b"_" + str.encode(barcode) + b"_" + b"NNNNNNNNNN" + b"\n"
-                        seqhead2 = seqhead2[ :index-1] + b"_" + str.encode(barcode) + b"_" + b"NNNNNNNNNN" + b"\n" 
-                elif sampletype[p5set[p5]] == "crop":
-                    seqhead1 = seqhead1[ :index-1] + b"_" + str.encode(barcode) + b"_" + seq2[0:10] + b"\n"
-                    seqhead2 = seqhead2[ :index-1] + b"_" + str.encode(barcode) + b"_" + seq2[0:10] + b"\n"
+                        seqhead1 = seqhead1[ :index-1] + b"_" + barcode_bytes + b"_" + b"NNNNNNNNNN" + b"\n"
+                        seqhead2 = seqhead2[ :index-1] + b"_" + barcode_bytes + b"_" + b"NNNNNNNNNN" + b"\n"
+                elif st_val == "crop":
+                    seqhead1 = seqhead1[ :index-1] + b"_" + barcode_bytes + b"_" + seq2[0:10] + b"\n"
+                    seqhead2 = seqhead2[ :index-1] + b"_" + barcode_bytes + b"_" + seq2[0:10] + b"\n"
                     index3 = seq1.decode().find("GTTTTAG")
                     # remove 22 bp on 5' and anything after GTTTTAG
                     if index3 == -1:
@@ -1131,24 +1134,24 @@ while 1:
                     else:
                         seq1 = seq1[22: index3]
                         qual1 = qual1[22: index3]
-                elif sampletype[p5set[p5]] == "cite":
+                elif st_val == "cite":
                     # remove 21 bp on 5' and keep 22-32
-                    seqhead1 = seqhead1[ :index-1] + b"_" + str.encode(barcode) + b"_" + seq2[0:10] + b"\n"
-                    seqhead2 = seqhead2[ :index-1] + b"_" + str.encode(barcode) + b"_" + seq2[0:10] + b"\n"
+                    seqhead1 = seqhead1[ :index-1] + b"_" + barcode_bytes + b"_" + seq2[0:10] + b"\n"
+                    seqhead2 = seqhead2[ :index-1] + b"_" + barcode_bytes + b"_" + seq2[0:10] + b"\n"
                     seq1 = seq1[21: 31]
                     qual1 = qual1[21: 31]
-                elif sampletype[p5set[p5]] == "cellhash":
+                elif st_val == "cellhash":
                     # remove 20 bp on 5' and keep 21-31
-                    seqhead1 = seqhead1[ :index-1] + b"_" + str.encode(barcode) + b"_" + seq2[0:10] + b"\n"
-                    seqhead2 = seqhead2[ :index-1] + b"_" + str.encode(barcode) + b"_" + seq2[0:10] + b"\n"
+                    seqhead1 = seqhead1[ :index-1] + b"_" + barcode_bytes + b"_" + seq2[0:10] + b"\n"
+                    seqhead2 = seqhead2[ :index-1] + b"_" + barcode_bytes + b"_" + seq2[0:10] + b"\n"
                     seq1 = seq1[20: 30]
                     qual1 = qual1[20: 30]
-                elif sampletype[p5set[p5]] == "notrim":
-                    seqhead1 = seqhead1[ :index-1] + b"_" + str.encode(barcode) + b"\n"
-                    seqhead2 = seqhead2[ :index-1] + b"_" + str.encode(barcode) + b"\n"
+                elif st_val == "notrim":
+                    seqhead1 = seqhead1[ :index-1] + b"_" + barcode_bytes + b"\n"
+                    seqhead2 = seqhead2[ :index-1] + b"_" + barcode_bytes + b"\n"
                 else:
-                    seqhead1 = seqhead1[ :index] + b"1:N:0:" + str.encode(barcode) + b"\n"
-                    seqhead2 = seqhead2[ :index] + b"2:N:0:" + str.encode(barcode) + b"\n"
+                    seqhead1 = seqhead1[ :index] + b"1:N:0:" + barcode_bytes + b"\n"
+                    seqhead2 = seqhead2[ :index] + b"2:N:0:" + barcode_bytes + b"\n"
         # align reads to themselves
         i = i+1  # total reads
 
